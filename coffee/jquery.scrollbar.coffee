@@ -11,6 +11,8 @@ defaults =
   # 当内容框的高度小于等于外层容器的高度时，也就是并没有出现overflow的情况下，默认不显示滚动条
   # always设置为true则总是显示滚动条
   always: false
+  # 是否禁止外部滚动，默认不禁止
+  outerScroll: false
 
 colors =
   gray: "#AAAAAA"
@@ -81,7 +83,7 @@ $.fn.scrollbar = (options) ->
       borderRadius: BorderRadius
       cursor: "default"
       width: ScrollbarWidth
-      height: "#{HeightRatio*100}%"
+      height: "#{HeightRatio * 100}%"
       backgroundColor: colors.lightGray
     content:
       position: "absolute"
@@ -96,6 +98,16 @@ $.fn.scrollbar = (options) ->
   $content.css css.content
 
   $controlbar.addClass options.classNames.controlbar if not $controlbar.hasClass options.classNames.controlbar
+
+  # 渲染滚动条
+  render = (heightRatio) ->
+    $controlbar.css {
+      top: 0
+      height: "#{heightRatio * 100}%"
+    }
+    $content.css {
+      top: 0
+    }
 
   DELTA = 50
 
@@ -117,6 +129,8 @@ $.fn.scrollbar = (options) ->
 
   # 避免事件重叠
   Drag = false
+  # 实现平滑滚动用到的计时器
+  # Timer = null
 
   Handlers =
     mousewheel: (evt) ->
@@ -130,6 +144,9 @@ $.fn.scrollbar = (options) ->
       scrollMove = if scrollMove < Scope.control.min then Scope.control.min else scrollMove
       Position.control = scrollMove
       $controlbar.css "top", Position.control
+      if not options.outerScroll
+        evt.stopPropagation()
+        evt.preventDefault()
       return true
     click: (evt) ->
       $target = $(evt.target)
@@ -140,7 +157,6 @@ $.fn.scrollbar = (options) ->
       scrollMove = if scrollMove > Scope.control.max then Scope.control.max else scrollMove
       scrollMove = if scrollMove < Scope.control.min then Scope.control.min else scrollMove
       Position.control = scrollMove
-      # $controlbar.css "top", scrollMove
       $controlbar.animate {
         "top": scrollMove
       }, 100, "swing"
@@ -148,7 +164,6 @@ $.fn.scrollbar = (options) ->
       move = if move > Scope.content.max then Scope.content.max else move
       move = if move < Scope.content.min then Scope.content.min else move
       Position.content = move
-      # $content.css "top", move
       $content.animate {
         "top": move
       }, 100, "swing"
@@ -214,19 +229,19 @@ $.fn.scrollbar = (options) ->
   return {
     # 重绘滚动条
     # @param {Number} contentHeight 内容框的高度
-    repaint: (contentHeight) ->
-      ContentHeight = contentHeight
+    # @param {Function} rendering 渲染中的回调
+    repaint: (contentHeight, rendering = -> false) ->
+      ContentHeight = contentHeight or $content.outerHeight()
       HeightRatio = Height / ContentHeight
-
-    # 渲染滚动条
-    render: ->
-      return this
-
+      Scope.content.min = Height - ContentHeight
+      Scope.control.max = Height * (1 - HeightRatio)
+      rendering.apply()
+      render(HeightRatio)
     # 隐藏滚动条
     hide: ->
-      return this
+      $scrollbar.hide()
 
     # 显示滚动条
     show: ->
-      return this
+      $scrollbar.show()
   }

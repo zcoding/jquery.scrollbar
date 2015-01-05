@@ -9,7 +9,8 @@
       controlbar: "u-bar"
     },
     position: "right",
-    always: false
+    always: false,
+    outerScroll: false
   };
 
   colors = {
@@ -20,7 +21,7 @@
   };
 
   $.fn.scrollbar = function(options) {
-    var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css;
+    var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css, render;
     options = $.extend({}, defaults, options);
     Always = options.always;
     $this = $(this);
@@ -87,6 +88,15 @@
     if (!$controlbar.hasClass(options.classNames.controlbar)) {
       $controlbar.addClass(options.classNames.controlbar);
     }
+    render = function(heightRatio) {
+      $controlbar.css({
+        top: 0,
+        height: "" + (heightRatio * 100) + "%"
+      });
+      return $content.css({
+        top: 0
+      });
+    };
     DELTA = 50;
     Position = {
       content: 0,
@@ -119,6 +129,10 @@
         scrollMove = scrollMove < Scope.control.min ? Scope.control.min : scrollMove;
         Position.control = scrollMove;
         $controlbar.css("top", Position.control);
+        if (!options.outerScroll) {
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
         return true;
       },
       click: function(evt) {
@@ -209,18 +223,24 @@
     $this.on(Events.mouseleave, "." + options.classNames.controlbar, Handlers.mouseleave);
     $doc.on(Events.mouseup, Handlers.mouseup);
     return {
-      repaint: function(contentHeight) {
-        ContentHeight = contentHeight;
-        return HeightRatio = Height / ContentHeight;
-      },
-      render: function() {
-        return this;
+      repaint: function(contentHeight, rendering) {
+        if (rendering == null) {
+          rendering = function() {
+            return false;
+          };
+        }
+        ContentHeight = contentHeight || $content.outerHeight();
+        HeightRatio = Height / ContentHeight;
+        Scope.content.min = Height - ContentHeight;
+        Scope.control.max = Height * (1 - HeightRatio);
+        rendering.apply();
+        return render(HeightRatio);
       },
       hide: function() {
-        return this;
+        return $scrollbar.hide();
       },
       show: function() {
-        return this;
+        return $scrollbar.show();
       }
     };
   };

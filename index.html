@@ -11,6 +11,18 @@
       <h1>12345</h1>
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
+      <p class="j-remove">fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
@@ -18,20 +30,8 @@
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheufffffffffffffffffffffffffffff</p>
-      <p>fheuffffffffffffffffffffffffffhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节fff</p>
+      <p >fheufffffffffffffffffffffffffffff</p>
+      <p>【神秘电台40年不间断发送信号 内容至今无人破解】据外媒4日报道，俄罗斯有一个神秘的短波无线电台，这一呼号为“UVB-76”的神秘电台自70年代起开始发送信号，后来呼号改为“MDZhB”，吸引了来自世界各地的听众。但无人知晓电台的作用，也没有人知道广播的内容。</p>
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
       <p>fheufffffffffffffffffffffffffffff</p>
@@ -46,11 +46,24 @@
       <div class="u-bar"></div>
     </div>
   </div>
-  <script src="../jquery/jquery-1.11.1.min.js"></script>
+  <button class="j-repaint">改变html并重绘</button>
+  <button class="j-hide">隐藏滚动条</button>
+  <button class="j-show">显示滚动条</button>
+  <script src="../jquery/jquery-1.11.2.min.js"></script>
   <script src="js/jquery.mousewheel.min.js"></script>
   <script src="coffee/jquery.scrollbar.js"></script>
   <script>
   var scrollbar = $('.j-container').scrollbar();
+  $('.j-repaint').click(function() {
+    $('.j-remove').remove();
+    scrollbar.repaint();
+  });
+  $('.j-hide').click(function() {
+    scrollbar.hide()
+  });
+  $('.j-show').click(function() {
+    scrollbar.show()
+  });
   </script>
 </body>
 </html>

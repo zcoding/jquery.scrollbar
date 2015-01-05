@@ -10,7 +10,7 @@ body {
 .m-container {
   display: block;
   margin: 50px auto auto;
-  padding: 0;
+  padding: 0 12px 0 0;
   width: 800px;
   height: 500px;
   border: 1px solid #888;
