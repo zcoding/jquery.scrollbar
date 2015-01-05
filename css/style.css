@@ -1,0 +1,18 @@
+html, body, div {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: normal normal 14px/1.5em arial,"microsoft yahei";
+}
+
+.m-container {
+  display: block;
+  margin: 50px auto auto;
+  padding: 0;
+  width: 800px;
+  height: 500px;
+  border: 1px solid #888;
+  background: #FFFFFF;
+}
