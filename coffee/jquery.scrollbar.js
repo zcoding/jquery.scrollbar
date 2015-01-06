@@ -10,8 +10,9 @@
     },
     position: "right",
     always: false,
-    outerScroll: false,
-    baseZIndex: 10
+    outerScroll: true,
+    baseZIndex: 10,
+    releaseMouse: true
   };
 
   colors = {
@@ -22,7 +23,7 @@
   };
 
   $.fn.scrollbar = function(options) {
-    var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css, render, zIndex;
+    var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, MOUSE_MAX, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css, mouse_count, release, render, zIndex;
     options = $.extend(true, {}, defaults, options);
     Always = options.always;
     $this = $(this);
@@ -136,6 +137,9 @@
       }
     };
     Drag = false;
+    mouse_count = 0;
+    MOUSE_MAX = 10;
+    release = false;
     Handlers = {
       mousewheel: function(evt) {
         var move, scrollMove;
@@ -150,6 +154,20 @@
         Position.control = scrollMove;
         $controlbar.css("top", Position.control);
         if (!options.outerScroll) {
+          evt.stopPropagation();
+          evt.preventDefault();
+          return true;
+        }
+        if ((Position.control === Scope.control.min || Position.control === Scope.control.max) && options.releaseMouse) {
+          mouse_count++;
+          if (mouse_count === MOUSE_MAX) {
+            mouse_count = 0;
+            release = true;
+          }
+        } else {
+          release = false;
+        }
+        if (!release) {
           evt.stopPropagation();
           evt.preventDefault();
         }

@@ -10,11 +10,13 @@ defaults =
   # 是否总是显示滚动条
   # 当内容框的高度小于等于外层容器的高度时，也就是并没有出现overflow的情况下，默认不显示滚动条（此时滚动条占100%）
   # always设置为true则总是显示滚动条
-  always: false
-  # 是否禁止外部滚动，默认不禁止
-  outerScroll: false
+  always: no
+  # 是否允许外部滚动，默认不禁止
+  outerScroll: yes
   # 指定基准z-index
   baseZIndex: 10
+  # 滚动到边缘时是否释放滚轮事件
+  releaseMouse: yes
 
 colors =
   gray: "#AAAAAA"
@@ -23,7 +25,7 @@ colors =
   darkGray: "#888888"
 
 $.fn.scrollbar = (options) ->
-  options = $.extend true, {}, defaults, options
+  options = $.extend yes, {}, defaults, options
 
   # 控制常量
   Always = options.always
@@ -151,6 +153,11 @@ $.fn.scrollbar = (options) ->
   # 实现平滑滚动用到的计时器
   # Timer = null
 
+  # 处理滚动到边缘时的滚轮事件
+  mouse_count = 0
+  MOUSE_MAX = 10
+  release = no
+
   Handlers =
     mousewheel: (evt) ->
       move = Position.content + DELTA * evt.deltaY
@@ -163,7 +170,20 @@ $.fn.scrollbar = (options) ->
       scrollMove = if scrollMove < Scope.control.min then Scope.control.min else scrollMove
       Position.control = scrollMove
       $controlbar.css "top", Position.control
+      # 直接释放滚轮事件冒泡
       if not options.outerScroll
+        evt.stopPropagation()
+        evt.preventDefault()
+        return true
+      # 滚动到边缘处理
+      if (Position.control is Scope.control.min or Position.control is Scope.control.max) and options.releaseMouse
+        mouse_count++
+        if mouse_count is MOUSE_MAX
+          mouse_count = 0
+          release = yes
+      else 
+        release = no
+      if not release
         evt.stopPropagation()
         evt.preventDefault()
       return true
