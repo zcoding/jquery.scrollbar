@@ -8,11 +8,13 @@ defaults =
   # 滚动条的位置 左/右
   position: "right"
   # 是否总是显示滚动条
-  # 当内容框的高度小于等于外层容器的高度时，也就是并没有出现overflow的情况下，默认不显示滚动条
+  # 当内容框的高度小于等于外层容器的高度时，也就是并没有出现overflow的情况下，默认不显示滚动条（此时滚动条占100%）
   # always设置为true则总是显示滚动条
   always: false
   # 是否禁止外部滚动，默认不禁止
   outerScroll: false
+  # 指定基准z-index
+  baseZIndex: 10
 
 colors =
   gray: "#AAAAAA"
@@ -67,6 +69,17 @@ $.fn.scrollbar = (options) ->
   # 高度比
   HeightRatio = Height / ContentHeight;
 
+  # 必须保证滚动条在内容框的上方
+  zIndex =
+    content: $content.css "zIndex"
+    container: $this.css "zIndex"
+    scrollbar: $scrollbar.css "zIndex"
+
+  if zIndex.content is "auto"
+    zIndex.container = options.baseZIndex if zIndex.container is "auto"
+    zIndex.content = zIndex.container + 1
+    zIndex.scrollbar = zIndex.content + 1
+
   css =
     scrollbar:
       position: "absolute"
@@ -76,6 +89,7 @@ $.fn.scrollbar = (options) ->
       width: ScrollbarWidth
       height: Height
       background: colors.lessGray
+      zIndex: zIndex.scrollbar
     controlbar:
       position: "absolute"
       top: 0
@@ -89,6 +103,7 @@ $.fn.scrollbar = (options) ->
       position: "absolute"
       top: 0
       left: 0
+      zIndex: zIndex.content
 
   css.scrollbar[options.position] = 0
   css.scrollbar["display"] = "none" if ContentHeight < Height and not Always
@@ -108,6 +123,10 @@ $.fn.scrollbar = (options) ->
     $content.css {
       top: 0
     }
+    if heightRatio is 1 and not Always
+      $scrollbar.hide()
+    else
+      $scrollbar.show()
 
   DELTA = 50
 
@@ -235,6 +254,10 @@ $.fn.scrollbar = (options) ->
       HeightRatio = Height / ContentHeight
       Scope.content.min = Height - ContentHeight
       Scope.control.max = Height * (1 - HeightRatio)
+      if HeightRatio > 1
+        Scope.content.min = 0
+        Scope.control.max = 0
+        HeightRatio = 1
       Position.content = 0
       Position.control = 0
       rendering.apply()

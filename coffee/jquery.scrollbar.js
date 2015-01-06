@@ -10,7 +10,8 @@
     },
     position: "right",
     always: false,
-    outerScroll: false
+    outerScroll: false,
+    baseZIndex: 10
   };
 
   colors = {
@@ -21,7 +22,7 @@
   };
 
   $.fn.scrollbar = function(options) {
-    var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css, render;
+    var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css, render, zIndex;
     options = $.extend({}, defaults, options);
     Always = options.always;
     $this = $(this);
@@ -52,6 +53,18 @@
     Height = options.height || $this.outerHeight();
     ContentHeight = options.contentHeight || $content.outerHeight();
     HeightRatio = Height / ContentHeight;
+    zIndex = {
+      content: $content.css("zIndex"),
+      container: $this.css("zIndex"),
+      scrollbar: $scrollbar.css("zIndex")
+    };
+    if (zIndex.content === "auto") {
+      if (zIndex.container === "auto") {
+        zIndex.container = options.baseZIndex;
+      }
+      zIndex.content = zIndex.container + 1;
+      zIndex.scrollbar = zIndex.content + 1;
+    }
     css = {
       scrollbar: {
         position: "absolute",
@@ -60,7 +73,8 @@
         cursor: "default",
         width: ScrollbarWidth,
         height: Height,
-        background: colors.lessGray
+        background: colors.lessGray,
+        zIndex: zIndex.scrollbar
       },
       controlbar: {
         position: "absolute",
@@ -75,7 +89,8 @@
       content: {
         position: "absolute",
         top: 0,
-        left: 0
+        left: 0,
+        zIndex: zIndex.content
       }
     };
     css.scrollbar[options.position] = 0;
@@ -93,9 +108,14 @@
         top: 0,
         height: "" + (heightRatio * 100) + "%"
       });
-      return $content.css({
+      $content.css({
         top: 0
       });
+      if (heightRatio === 1 && !Always) {
+        return $scrollbar.hide();
+      } else {
+        return $scrollbar.show();
+      }
     };
     DELTA = 50;
     Position = {
@@ -233,6 +253,11 @@
         HeightRatio = Height / ContentHeight;
         Scope.content.min = Height - ContentHeight;
         Scope.control.max = Height * (1 - HeightRatio);
+        if (HeightRatio > 1) {
+          Scope.content.min = 0;
+          Scope.control.max = 0;
+          HeightRatio = 1;
+        }
         Position.content = 0;
         Position.control = 0;
         rendering.apply();
