@@ -128,12 +128,12 @@
     };
     Scope = {
       content: {
-        min: Height - ContentHeight,
+        min: Math.floor(Height - ContentHeight),
         max: 0
       },
       control: {
         min: 0,
-        max: Height * (1 - HeightRatio)
+        max: Math.ceil(Height * (1 - HeightRatio))
       }
     };
     Drag = false;
@@ -142,13 +142,14 @@
     release = false;
     Handlers = {
       mousewheel: function(evt) {
-        var move, scrollMove;
-        move = Position.content + DELTA * evt.deltaY;
+        var deltaY, move, scrollMove;
+        deltaY = DELTA * evt.deltaY;
+        move = Position.content + deltaY;
         move = move > Scope.content.max ? Scope.content.max : move;
         move = move < Scope.content.min ? Scope.content.min : move;
         Position.content = move;
         $content.css("top", Position.content);
-        scrollMove = -move * HeightRatio;
+        scrollMove = Position.control - deltaY * HeightRatio;
         scrollMove = scrollMove > Scope.control.max ? Scope.control.max : scrollMove;
         scrollMove = scrollMove < Scope.control.min ? Scope.control.min : scrollMove;
         Position.control = scrollMove;
@@ -160,11 +161,12 @@
         }
         if ((Position.control === Scope.control.min || Position.control === Scope.control.max) && options.releaseMouse) {
           mouse_count++;
-          if (mouse_count === MOUSE_MAX) {
+          if (mouse_count > MOUSE_MAX) {
             mouse_count = 0;
             release = true;
           }
         } else {
+          mouse_count = 0;
           release = false;
         }
         if (!release) {

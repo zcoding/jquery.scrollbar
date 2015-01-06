@@ -142,11 +142,11 @@ $.fn.scrollbar = (options) ->
   # 滚动范围
   Scope =
     content:
-      min: Height - ContentHeight
+      min: Math.floor(Height - ContentHeight)
       max: 0
     control:
       min: 0
-      max: Height * (1 - HeightRatio)
+      max: Math.ceil(Height * (1 - HeightRatio))
 
   # 避免事件重叠
   Drag = false
@@ -160,12 +160,13 @@ $.fn.scrollbar = (options) ->
 
   Handlers =
     mousewheel: (evt) ->
-      move = Position.content + DELTA * evt.deltaY
+      deltaY = DELTA * evt.deltaY
+      move = Position.content + deltaY
       move = if move > Scope.content.max then Scope.content.max else move
       move = if move < Scope.content.min then Scope.content.min else move
       Position.content = move
       $content.css "top", Position.content
-      scrollMove = -move * HeightRatio
+      scrollMove = Position.control - deltaY * HeightRatio
       scrollMove = if scrollMove > Scope.control.max then Scope.control.max else scrollMove
       scrollMove = if scrollMove < Scope.control.min then Scope.control.min else scrollMove
       Position.control = scrollMove
@@ -178,10 +179,11 @@ $.fn.scrollbar = (options) ->
       # 滚动到边缘处理
       if (Position.control is Scope.control.min or Position.control is Scope.control.max) and options.releaseMouse
         mouse_count++
-        if mouse_count is MOUSE_MAX
+        if mouse_count > MOUSE_MAX
           mouse_count = 0
           release = yes
       else 
+        mouse_count = 0
         release = no
       if not release
         evt.stopPropagation()
