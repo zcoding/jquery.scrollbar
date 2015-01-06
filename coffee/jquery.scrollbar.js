@@ -156,12 +156,14 @@
         return true;
       },
       click: function(evt) {
-        var $target, delta, move, scrollMove;
+        var $target, delta, mouseOffsetY, move, offsets, scrollMove;
         $target = $(evt.target);
         if ($target.is("." + options.classNames.controlbar)) {
           return false;
         }
-        delta = evt.pageY > Position.control + Height * HeightRatio ? DELTA : -DELTA;
+        offsets = $scrollbar.offset();
+        mouseOffsetY = evt.pageY - offsets.top;
+        delta = mouseOffsetY > Position.control + Height * HeightRatio ? DELTA : -DELTA;
         scrollMove = Position.control + delta;
         scrollMove = scrollMove > Scope.control.max ? Scope.control.max : scrollMove;
         scrollMove = scrollMove < Scope.control.min ? Scope.control.min : scrollMove;

@@ -171,7 +171,10 @@ $.fn.scrollbar = (options) ->
       $target = $(evt.target)
       return false if $target.is ".#{options.classNames.controlbar}"
 
-      delta = if evt.pageY > Position.control + Height * HeightRatio then DELTA else -DELTA
+      offsets = $scrollbar.offset()
+      mouseOffsetY = evt.pageY - offsets.top
+
+      delta = if mouseOffsetY > Position.control + Height * HeightRatio then DELTA else -DELTA
       scrollMove = Position.control + delta
       scrollMove = if scrollMove > Scope.control.max then Scope.control.max else scrollMove
       scrollMove = if scrollMove < Scope.control.min then Scope.control.min else scrollMove
