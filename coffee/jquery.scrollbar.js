@@ -23,7 +23,7 @@
 
   $.fn.scrollbar = function(options) {
     var $content, $controlbar, $doc, $scrollbar, $this, Always, BorderRadius, ContentHeight, DELTA, Drag, Events, Handlers, Height, HeightRatio, Namespace, Position, Scope, ScrollbarBorder, ScrollbarWidth, css, render, zIndex;
-    options = $.extend({}, defaults, options);
+    options = $.extend(true, {}, defaults, options);
     Always = options.always;
     $this = $(this);
     $doc = $(document);

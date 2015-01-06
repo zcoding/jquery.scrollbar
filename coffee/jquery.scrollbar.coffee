@@ -23,7 +23,7 @@ colors =
   darkGray: "#888888"
 
 $.fn.scrollbar = (options) ->
-  options = $.extend {}, defaults, options
+  options = $.extend true, {}, defaults, options
 
   # 控制常量
   Always = options.always

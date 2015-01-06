@@ -43,7 +43,7 @@
       <p>fheufffffffffffffffffffffffffffff</p>
     </div>
     <div class="m-scrollbar">
-      <div class="u-bar"></div>
+      <div class="j-bar"></div>
     </div>
   </div>
   <button class="j-repaint">改变html并重绘</button>
@@ -53,7 +53,11 @@
   <script src="js/jquery.mousewheel.min.js"></script>
   <script src="coffee/jquery.scrollbar.js"></script>
   <script>
-  var scrollbar = $('.j-container').scrollbar();
+  var scrollbar = $('.j-container').scrollbar({
+    classNames: {
+      controlbar: 'j-bar'
+    }
+  });
   $('.j-repaint').click(function() {
     $('.j-remove').remove();
     scrollbar.repaint();
