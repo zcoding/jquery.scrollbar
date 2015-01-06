@@ -10,7 +10,7 @@
     },
     position: "right",
     always: false,
-    outerScroll: true,
+    fixed: false,
     baseZIndex: 10,
     releaseMouse: true
   };
@@ -153,7 +153,7 @@
         scrollMove = scrollMove < Scope.control.min ? Scope.control.min : scrollMove;
         Position.control = scrollMove;
         $controlbar.css("top", Position.control);
-        if (!options.outerScroll) {
+        if (options.fixed) {
           evt.stopPropagation();
           evt.preventDefault();
           return true;

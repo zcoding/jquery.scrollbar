@@ -11,8 +11,8 @@ defaults =
   # 当内容框的高度小于等于外层容器的高度时，也就是并没有出现overflow的情况下，默认不显示滚动条（此时滚动条占100%）
   # always设置为true则总是显示滚动条
   always: no
-  # 是否允许外部滚动，默认不禁止
-  outerScroll: yes
+  # 是否固定（即不会释放滚轮事件）
+  fixed: no
   # 指定基准z-index
   baseZIndex: 10
   # 滚动到边缘时是否释放滚轮事件
@@ -171,7 +171,7 @@ $.fn.scrollbar = (options) ->
       Position.control = scrollMove
       $controlbar.css "top", Position.control
       # 直接释放滚轮事件冒泡
-      if not options.outerScroll
+      if options.fixed
         evt.stopPropagation()
         evt.preventDefault()
         return true
