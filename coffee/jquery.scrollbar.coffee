@@ -235,6 +235,8 @@ $.fn.scrollbar = (options) ->
       HeightRatio = Height / ContentHeight
       Scope.content.min = Height - ContentHeight
       Scope.control.max = Height * (1 - HeightRatio)
+      Position.content = 0
+      Position.control = 0
       rendering.apply()
       render(HeightRatio)
     # 隐藏滚动条
